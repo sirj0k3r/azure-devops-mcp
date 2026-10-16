@@ -117,7 +117,7 @@ async function main() {
   // removing prompts until further notice
   // configurePrompts(server);
 
-  configureAllTools(server, authenticator, getAzureDevOpsClient(authenticator, userAgentComposer, argv.authentication), () => userAgentComposer.userAgent, enabledDomains);
+  configureAllTools(server, authenticator, getAzureDevOpsClient(authenticator, userAgentComposer, argv.authentication), () => userAgentComposer.userAgent, enabledDomains, orgName);
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

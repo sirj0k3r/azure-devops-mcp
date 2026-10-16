@@ -15,6 +15,13 @@
   "bin": {
     "mcp-server-azuredevops": "dist/index.js"
   },
+  "exports": {
+    "./tools": {
+      "types": "./dist/tools.d.ts",
+      "default": "./dist/tools.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist"
   ],

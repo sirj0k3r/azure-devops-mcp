@@ -22,9 +22,6 @@ jest.mock("../../../src/tools/auth", () => ({
   getUserIdFromEmail: jest.fn(),
 }));
 
-// Mock index.js to avoid yargs CLI parsing at import time
-jest.mock("../../../src/index", () => ({ orgName: "test-org" }));
-
 const mockGetCurrentUserDetails = getCurrentUserDetails as jest.MockedFunction<typeof getCurrentUserDetails>;
 const mockGetUserIdFromEmail = getUserIdFromEmail as jest.MockedFunction<typeof getUserIdFromEmail>;
 
@@ -125,7 +122,7 @@ describe("repos tools", () => {
 
   describe("repo_update_pull_request", () => {
     it("should update pull request with all provided fields", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -197,7 +194,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request with only title", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -262,7 +259,7 @@ describe("repos tools", () => {
     });
 
     it("should preserve draft status when isDraft is omitted from a schema-parsed update", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -300,7 +297,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request status to Active", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -365,7 +362,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request status to Abandoned", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -430,7 +427,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request with status and other fields", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -497,7 +494,7 @@ describe("repos tools", () => {
     });
 
     it("should return error when no fields provided", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
 
@@ -519,7 +516,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request with autocomplete enabled", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -576,7 +573,7 @@ describe("repos tools", () => {
     });
 
     it("should set merge commit message when autocomplete is enabled", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -634,7 +631,7 @@ describe("repos tools", () => {
     });
 
     it("should disable autocomplete when autoComplete is false", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -672,7 +669,7 @@ describe("repos tools", () => {
     });
 
     it("should not bypass policies when bypassReason is not provided", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -721,7 +718,7 @@ describe("repos tools", () => {
     });
 
     it("should not bypass policies when only bypassReason is provided", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -773,7 +770,7 @@ describe("repos tools", () => {
     });
 
     it("should require a reason to explicitly bypass policies", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -794,7 +791,7 @@ describe("repos tools", () => {
     });
 
     it("should bypass policies only when explicitly requested with a reason", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -827,7 +824,7 @@ describe("repos tools", () => {
     });
 
     it("should handle description over 4000 characters", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -855,7 +852,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request labels by replacing existing labels", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -923,7 +920,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request with labels and other fields", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -989,7 +986,7 @@ describe("repos tools", () => {
     });
 
     it("should update pull request labels to empty array (remove all labels)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1049,7 +1046,7 @@ describe("repos tools", () => {
     });
 
     it("should handle labels when existing PR has no labels", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1103,7 +1100,7 @@ describe("repos tools", () => {
 
   describe("repo_create_pull_request", () => {
     it("should create pull request with basic fields", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1175,7 +1172,7 @@ describe("repos tools", () => {
     });
 
     it("should create pull request with all optional fields including labels", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1257,7 +1254,7 @@ describe("repos tools", () => {
     });
 
     it("should reject pull request with description over 4000 characters", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1280,7 +1277,7 @@ describe("repos tools", () => {
     });
 
     it("should fall back to getPullRequests when createPullRequest returns null", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1348,7 +1345,7 @@ describe("repos tools", () => {
     });
 
     it("should return error when createPullRequest returns null and fallback finds no PRs", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1375,7 +1372,7 @@ describe("repos tools", () => {
 
   describe("repo_create_branch", () => {
     it("should create branch with default source branch (main)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1423,7 +1420,7 @@ describe("repos tools", () => {
     });
 
     it("should create branch with custom source branch", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1471,7 +1468,7 @@ describe("repos tools", () => {
     });
 
     it("should create branch with specific commit ID", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1514,7 +1511,7 @@ describe("repos tools", () => {
     });
 
     it("should handle source branch not found error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1536,7 +1533,7 @@ describe("repos tools", () => {
     });
 
     it("should handle getRefs API error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1559,7 +1556,7 @@ describe("repos tools", () => {
     });
 
     it("should handle updateRefs failure", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1595,7 +1592,7 @@ describe("repos tools", () => {
     });
 
     it("should handle updateRefs failure without custom message", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1630,7 +1627,7 @@ describe("repos tools", () => {
     });
 
     it("should handle updateRefs API error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1661,7 +1658,7 @@ describe("repos tools", () => {
     });
 
     it("should handle source branch with missing objectId", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch tool not registered");
@@ -1692,7 +1689,7 @@ describe("repos tools", () => {
 
   describe("repo_update_pull_request_reviewers", () => {
     it("should add reviewers to pull request", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1718,7 +1715,7 @@ describe("repos tools", () => {
     });
 
     it("should remove reviewers from pull request", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -1747,7 +1744,7 @@ describe("repos tools", () => {
 
   describe("repo_list_repos_by_project", () => {
     it("should list repositories by project", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -1801,7 +1798,7 @@ describe("repos tools", () => {
     });
 
     it("should filter repositories by name", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -1832,7 +1829,7 @@ describe("repos tools", () => {
 
   describe("repo_list_pull_requests_by_repo_or_project - repository tests", () => {
     it("should list pull requests by repository", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -1872,7 +1869,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests created by me", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -1896,7 +1893,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests where I am a reviewer", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -1920,7 +1917,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests created by me and where I am a reviewer", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -1952,7 +1949,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests created by specific user successfully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -1978,7 +1975,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by source branch", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2012,7 +2009,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by target branch", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2046,7 +2043,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by both source and target branches", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2082,7 +2079,7 @@ describe("repos tools", () => {
     });
 
     it("should combine branch filters with user filters", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2123,7 +2120,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by specific reviewer successfully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2149,7 +2146,7 @@ describe("repos tools", () => {
     });
 
     it("should prioritize user_is_reviewer over i_am_reviewer flag", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2184,7 +2181,7 @@ describe("repos tools", () => {
     });
 
     it("should handle error when user_is_reviewer user not found", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2213,7 +2210,7 @@ describe("repos tools", () => {
 
   describe("repo_list_pull_requests_by_repo_or_project - project tests", () => {
     it("should list pull requests by project", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2268,7 +2265,7 @@ describe("repos tools", () => {
     });
 
     it("should map statusName from PullRequestStatus enum values", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2345,7 +2342,7 @@ describe("repos tools", () => {
     });
 
     it("should return Unknown statusName for unrecognized pull request status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2397,7 +2394,7 @@ describe("repos tools", () => {
     });
 
     it("should filter by current user when created_by_me is true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2454,7 +2451,7 @@ describe("repos tools", () => {
     });
 
     it("should filter by current user as reviewer when i_am_reviewer is true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2511,7 +2508,7 @@ describe("repos tools", () => {
     });
 
     it("should filter by both creator and reviewer when both created_by_me and i_am_reviewer are true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2569,7 +2566,7 @@ describe("repos tools", () => {
     });
 
     it("should prioritize created_by_user over created_by_me flag", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2631,7 +2628,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by source branch", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2663,7 +2660,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by target branch", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2695,7 +2692,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by both source and target branches", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2729,7 +2726,7 @@ describe("repos tools", () => {
     });
 
     it("should combine branch filters with user filters", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2766,7 +2763,7 @@ describe("repos tools", () => {
     });
 
     it("should filter pull requests by specific reviewer successfully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2825,7 +2822,7 @@ describe("repos tools", () => {
     });
 
     it("should prioritize user_is_reviewer over i_am_reviewer flag", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2853,7 +2850,7 @@ describe("repos tools", () => {
     });
 
     it("should handle error when user_is_reviewer user not found", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2880,7 +2877,7 @@ describe("repos tools", () => {
     });
 
     it("should support both created_by_user and user_is_reviewer filters simultaneously", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -2962,7 +2959,7 @@ describe("repos tools", () => {
     ];
 
     function getHandler() {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_org);
       if (!call) throw new Error("repo_pull_request_org tool not registered");
       return call[3];
@@ -3060,7 +3057,7 @@ describe("repos tools", () => {
 
   describe("repo_list_pull_request_threads", () => {
     it("should list pull request threads", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3122,7 +3119,7 @@ describe("repos tools", () => {
     });
 
     it("should return full response when requested", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3146,7 +3143,7 @@ describe("repos tools", () => {
     });
 
     it("should return an empty array when no pull request threads are returned", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3168,7 +3165,7 @@ describe("repos tools", () => {
     });
 
     it("should return an empty full response when no pull request threads are returned", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3191,7 +3188,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by status (Active)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3234,7 +3231,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by status (Closed)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3272,7 +3269,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by status (Fixed)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3310,7 +3307,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by author email", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3355,7 +3352,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by author email (case-insensitive)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3392,7 +3389,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by author display name", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3437,7 +3434,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by author display name (case-insensitive)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3474,7 +3471,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by both status and author email", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3519,7 +3516,7 @@ describe("repos tools", () => {
     });
 
     it("should filter threads by status and author display name", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3564,7 +3561,7 @@ describe("repos tools", () => {
     });
 
     it("should combine all filters: status, authorEmail, and authorDisplayName", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3611,7 +3608,7 @@ describe("repos tools", () => {
     });
 
     it("should return empty array when no threads match filters", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3643,7 +3640,7 @@ describe("repos tools", () => {
     });
 
     it("should apply pagination after filtering", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3691,7 +3688,7 @@ describe("repos tools", () => {
     });
 
     it("should handle threads with no comments when filtering by author", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3728,7 +3725,7 @@ describe("repos tools", () => {
     });
 
     it("should handle threads with empty comments array when filtering by author", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3767,7 +3764,7 @@ describe("repos tools", () => {
 
   describe("repo_list_pull_request_thread_comments", () => {
     it("should list pull request thread comments", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3821,7 +3818,7 @@ describe("repos tools", () => {
     });
 
     it("should list pull request thread comments with full response", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -3875,7 +3872,7 @@ describe("repos tools", () => {
 
   describe("repo_list_branches_by_repo", () => {
     it("should list branches by repository", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -3907,7 +3904,7 @@ describe("repos tools", () => {
 
   describe("repo_list_my_branches_by_repo", () => {
     it("should list my branches by repository", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -3934,7 +3931,7 @@ describe("repos tools", () => {
 
   describe("repo_get_repo_by_name_or_id", () => {
     it("should get repository by name", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -3959,7 +3956,7 @@ describe("repos tools", () => {
     });
 
     it("should get repository by ID", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -3983,7 +3980,7 @@ describe("repos tools", () => {
     });
 
     it("should return error when repository not found", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -4007,7 +4004,7 @@ describe("repos tools", () => {
 
   describe("repo_get_branch_by_name", () => {
     it("should get branch by name", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -4033,7 +4030,7 @@ describe("repos tools", () => {
     });
 
     it("should return error message when branch not found", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -4058,7 +4055,7 @@ describe("repos tools", () => {
     const repositoryId = "00000000-0000-0000-0000-000000000123";
 
     it("should get pull request by ID", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4086,7 +4083,7 @@ describe("repos tools", () => {
     });
 
     it("should require project when repositoryId is a repository name", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4103,7 +4100,7 @@ describe("repos tools", () => {
     });
 
     it("should spotlight prompt injection instructions in a pull request description", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4123,7 +4120,7 @@ describe("repos tools", () => {
     });
 
     it("should pass project parameter when provided", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4151,7 +4148,7 @@ describe("repos tools", () => {
     });
 
     it("should include work item refs when requested", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4172,7 +4169,7 @@ describe("repos tools", () => {
     });
 
     it("should include labels when includeLabels is true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4222,7 +4219,7 @@ describe("repos tools", () => {
     });
 
     it("should not include labels when includeLabels parameter is not specified and defaults are not applied", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4252,7 +4249,7 @@ describe("repos tools", () => {
     });
 
     it("should include labels by default when includeLabels is explicitly set to default value true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4299,7 +4296,7 @@ describe("repos tools", () => {
     });
 
     it("should not include labels when includeLabels is false", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4329,7 +4326,7 @@ describe("repos tools", () => {
     });
 
     it("should handle empty labels array", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4374,7 +4371,7 @@ describe("repos tools", () => {
     });
 
     it("should handle labels with undefined names", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4421,7 +4418,7 @@ describe("repos tools", () => {
     });
 
     it("should handle getPullRequestLabels API error gracefully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4469,7 +4466,7 @@ describe("repos tools", () => {
     });
 
     it("should work with both includeLabels and includeWorkItemRefs enabled", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4516,7 +4513,7 @@ describe("repos tools", () => {
     });
 
     it("should include changed files when includeChangedFiles is true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -4558,7 +4555,7 @@ describe("repos tools", () => {
     });
 
     it("should not fetch changed files when includeChangedFiles is false", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       const [, , , handler] = call;
@@ -4573,7 +4570,7 @@ describe("repos tools", () => {
     });
 
     it("should not fetch changed files when includeChangedFiles is not specified", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       const [, , , handler] = call;
@@ -4588,7 +4585,7 @@ describe("repos tools", () => {
     });
 
     it("should handle empty iterations when includeChangedFiles is true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       const [, , , handler] = call;
@@ -4605,7 +4602,7 @@ describe("repos tools", () => {
     });
 
     it("should handle getPullRequestIterationChanges API error gracefully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       const [, , , handler] = call;
@@ -4629,7 +4626,7 @@ describe("repos tools", () => {
     });
 
     it("should handle iteration with null id when includeChangedFiles is true", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       const [, , , handler] = call;
@@ -4646,7 +4643,7 @@ describe("repos tools", () => {
     });
 
     it("should work with both includeLabels and includeChangedFiles enabled", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       const [, , , handler] = call;
@@ -4689,14 +4686,14 @@ describe("repos tools", () => {
       Array.from({ length: count }, (_, i) => ({ changeTrackingId: offset + i + 1, item: { path: `/src/file${offset + i + 1}.ts` }, changeType: 2 }));
 
     const getPullRequestHandler = () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
       return call[3] as (params: unknown) => Promise<{ content: [{ text: string }] }>;
     };
 
     it("should default top to 100 and skip to 0 for the changed files call", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
       const [, , schema, handler] = call;
@@ -4770,7 +4767,7 @@ describe("repos tools", () => {
 
   describe("repo_reply_to_comment", () => {
     it("should reply to comment successfully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4817,7 +4814,7 @@ describe("repos tools", () => {
     });
 
     it("should update thread status when replying with a status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4851,7 +4848,7 @@ describe("repos tools", () => {
     });
 
     it("should report a partial failure when status update fails after replying", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4886,7 +4883,7 @@ describe("repos tools", () => {
     });
 
     it("should report a partial failure when status update returns no thread after replying", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4921,7 +4918,7 @@ describe("repos tools", () => {
     });
 
     it("should report an unknown partial failure when status update rejects without an Error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4944,7 +4941,7 @@ describe("repos tools", () => {
     });
 
     it("should return full response when requested", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4968,7 +4965,7 @@ describe("repos tools", () => {
     });
 
     it("should return error when comment creation fails", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -4993,7 +4990,7 @@ describe("repos tools", () => {
 
   describe("repo_update_comment", () => {
     it("should update a comment successfully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5017,7 +5014,7 @@ describe("repos tools", () => {
     });
 
     it("should return the full updated comment when requested", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5040,7 +5037,7 @@ describe("repos tools", () => {
     });
 
     it("should return an error when the comment update fails", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5064,7 +5061,7 @@ describe("repos tools", () => {
 
   describe("repo_create_pull_request_thread", () => {
     it("should create pull request thread with basic content", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5097,7 +5094,7 @@ describe("repos tools", () => {
     });
 
     it("should create pull request thread with file context and position", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5139,7 +5136,7 @@ describe("repos tools", () => {
     });
 
     it("should create pull request thread with iteration context", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5178,7 +5175,7 @@ describe("repos tools", () => {
     });
 
     it("should reject incomplete pull request iteration context", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5200,7 +5197,7 @@ describe("repos tools", () => {
     });
 
     it("should normalize file path by adding leading slash if missing", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5236,7 +5233,7 @@ describe("repos tools", () => {
     });
 
     it("should preserve file path if it already starts with slash", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5272,7 +5269,7 @@ describe("repos tools", () => {
     });
 
     it("should throw error for invalid line numbers", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5296,7 +5293,7 @@ describe("repos tools", () => {
 
   describe("repo_update_pull_request_thread", () => {
     it("should update thread status to Active", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5349,7 +5346,7 @@ describe("repos tools", () => {
     });
 
     it("should update thread status to Fixed", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5390,7 +5387,7 @@ describe("repos tools", () => {
     });
 
     it("should update thread status to WontFix", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5431,7 +5428,7 @@ describe("repos tools", () => {
     });
 
     it("should update thread status to Closed", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5472,7 +5469,7 @@ describe("repos tools", () => {
     });
 
     it("should update thread status to ByDesign", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5513,7 +5510,7 @@ describe("repos tools", () => {
     });
 
     it("should update thread status to Pending", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5554,7 +5551,7 @@ describe("repos tools", () => {
     });
 
     it("should return error when no fields provided", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5576,7 +5573,7 @@ describe("repos tools", () => {
     });
 
     it("should return error when thread update fails", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5600,7 +5597,7 @@ describe("repos tools", () => {
     });
 
     it("should filter deleted comments from response", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -5674,7 +5671,7 @@ describe("repos tools", () => {
     }
 
     function getHandler() {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
       if (!call) throw new Error("repo_search_commits tool not registered");
       const [, , , handler] = call;
@@ -5883,7 +5880,7 @@ describe("repos tools", () => {
 
   describe("repo_list_pull_requests_by_commits", () => {
     it("should list pull requests by commits successfully", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -5926,7 +5923,7 @@ describe("repos tools", () => {
     });
 
     it("should handle pull request query errors", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -5950,7 +5947,7 @@ describe("repos tools", () => {
 
   describe("repo_vote_pull_request", () => {
     it("should cast an Approved vote", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -5976,7 +5973,7 @@ describe("repos tools", () => {
     });
 
     it("should cast a Rejected vote", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -5999,7 +5996,7 @@ describe("repos tools", () => {
     });
 
     it("should cast a vote when reviewer does not exist yet", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -6022,7 +6019,7 @@ describe("repos tools", () => {
     });
 
     it("should throw when authenticated user ID is missing", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -6045,7 +6042,7 @@ describe("repos tools", () => {
     });
 
     it("should propagate API errors from createPullRequestReviewer", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -6068,7 +6065,7 @@ describe("repos tools", () => {
     });
 
     it("should propagate API errors from getPullRequestReviewer", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -6093,7 +6090,7 @@ describe("repos tools", () => {
 
   describe("pullRequestStatusStringToInt function coverage", () => {
     it("should handle Completed status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6119,7 +6116,7 @@ describe("repos tools", () => {
     });
 
     it("should handle All status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6141,7 +6138,7 @@ describe("repos tools", () => {
     });
 
     it("should handle NotSet status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6163,7 +6160,7 @@ describe("repos tools", () => {
     });
 
     it("should handle Abandoned status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6185,7 +6182,7 @@ describe("repos tools", () => {
     });
 
     it("should throw error for unknown status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6207,7 +6204,7 @@ describe("repos tools", () => {
 
   describe("error handling coverage", () => {
     it("should handle getUserIdFromEmail error in list_pull_requests_by_repo", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6232,7 +6229,7 @@ describe("repos tools", () => {
     });
 
     it("should handle getUserIdFromEmail error in list_pull_requests_by_project", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6257,7 +6254,7 @@ describe("repos tools", () => {
     });
 
     it("should handle commit search error in search_commits", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
       if (!call) throw new Error("repo_search_commits tool not registered");
@@ -6270,7 +6267,7 @@ describe("repos tools", () => {
     });
 
     it("should handle thread creation error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6293,7 +6290,7 @@ describe("repos tools", () => {
     });
 
     it("should handle comment reply error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6319,7 +6316,7 @@ describe("repos tools", () => {
 
   describe("edge cases and validation", () => {
     it("should handle invalid line numbers in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6342,7 +6339,7 @@ describe("repos tools", () => {
     });
 
     it("should reject invalid rightFileStartOffset in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6366,7 +6363,7 @@ describe("repos tools", () => {
     });
 
     it("should reject rightFileEndLine without rightFileStartLine in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6389,7 +6386,7 @@ describe("repos tools", () => {
     });
 
     it("should reject invalid rightFileEndLine in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6414,7 +6411,7 @@ describe("repos tools", () => {
     });
 
     it("should reject rightFileEndLine without rightFileEndOffset in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6438,7 +6435,7 @@ describe("repos tools", () => {
     });
 
     it("should reject invalid rightFileEndOffset in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6463,7 +6460,7 @@ describe("repos tools", () => {
     });
 
     it("should reject rightFileEndOffset without rightFileEndLine in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6487,7 +6484,7 @@ describe("repos tools", () => {
     });
 
     it("should require both rightFileEndLine and rightFileEndOffset when rightFileStartLine and rightFileStartOffset are specified", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6512,7 +6509,7 @@ describe("repos tools", () => {
     });
 
     it("should reject rightFileEndOffset less than rightFileStartOffset on same line in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6538,7 +6535,7 @@ describe("repos tools", () => {
     });
 
     it("should handle create_pull_request with undefined forkSourceRepositoryId", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -6613,7 +6610,7 @@ describe("repos tools", () => {
     });
 
     it("should handle trimComments with undefined comments", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -6656,7 +6653,7 @@ describe("repos tools", () => {
     });
 
     it("should handle trimComments with deleted comments", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -6705,7 +6702,7 @@ describe("repos tools", () => {
     });
 
     it("should handle list_repos_by_project without repoNameFilter", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -6735,7 +6732,7 @@ describe("repos tools", () => {
     });
 
     it("should handle branches.find returning undefined (branch name mismatch)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -6762,7 +6759,7 @@ describe("repos tools", () => {
     });
 
     it("should handle branch.name with exact branchName match", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -6789,7 +6786,7 @@ describe("repos tools", () => {
     });
 
     it("should handle list_pull_requests_by_repo with created_by_user and i_am_reviewer both false", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6823,7 +6820,7 @@ describe("repos tools", () => {
     });
 
     it("should handle list_pull_requests_by_project with created_by_user and i_am_reviewer both false", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -6856,7 +6853,7 @@ describe("repos tools", () => {
     });
 
     it("should handle comments?.flatMap with null/undefined branch in branchesFilterOutIrrelevantProperties", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
       if (!call) throw new Error("repo_branch tool not registered");
@@ -6886,7 +6883,7 @@ describe("repos tools", () => {
     });
 
     it("should handle rightFileStartOffset without validation error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6929,7 +6926,7 @@ describe("repos tools", () => {
     });
 
     it("should handle rightFileEndOffset without validation error", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -6971,7 +6968,7 @@ describe("repos tools", () => {
     });
 
     it("should handle search_commits with branch filter", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
       if (!call) throw new Error("repo_search_commits tool not registered");
@@ -6991,7 +6988,7 @@ describe("repos tools", () => {
     });
 
     it("should handle search_commits without branch filter", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
       if (!call) throw new Error("repo_search_commits tool not registered");
@@ -7011,7 +7008,7 @@ describe("repos tools", () => {
     });
 
     it("should handle rightFileEndLine without rightFileStartLine", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7034,7 +7031,7 @@ describe("repos tools", () => {
     });
 
     it("should handle invalid rightFileEndLine value", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7058,7 +7055,7 @@ describe("repos tools", () => {
     });
 
     it("should handle invalid rightFileStartOffset value", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7082,7 +7079,7 @@ describe("repos tools", () => {
     });
 
     it("should handle invalid rightFileEndOffset value", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7107,7 +7104,7 @@ describe("repos tools", () => {
     });
 
     it("should test pullRequestStatusStringToInt with unknown status", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7127,7 +7124,7 @@ describe("repos tools", () => {
     });
 
     it("should handle threads?.sort with undefined id values", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -7175,7 +7172,7 @@ describe("repos tools", () => {
     });
 
     it("should handle comments?.sort with undefined id values", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
       if (!call) throw new Error("repo_pull_request_thread tool not registered");
@@ -7221,7 +7218,7 @@ describe("repos tools", () => {
     });
 
     it("should handle workItemRefs when workItems is undefined", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -7252,7 +7249,7 @@ describe("repos tools", () => {
     });
 
     it("should handle workItemRefs when workItems is provided", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
@@ -7283,7 +7280,7 @@ describe("repos tools", () => {
     });
 
     it("should handle empty repoNameFilter in list_repos_by_project", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -7309,7 +7306,7 @@ describe("repos tools", () => {
     });
 
     it("should handle getUserIdFromEmail error with created_by_user in list_pull_requests_by_repo", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7333,7 +7330,7 @@ describe("repos tools", () => {
     });
 
     it("should handle getUserIdFromEmail error with created_by_user in list_pull_requests_by_project", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7357,7 +7354,7 @@ describe("repos tools", () => {
     });
 
     it("should handle rightFileEndOffset set without rightFileEndLine in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7382,7 +7379,7 @@ describe("repos tools", () => {
     });
 
     it("should handle error in list_pull_requests_by_commits", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7405,7 +7402,7 @@ describe("repos tools", () => {
     });
 
     it("should handle different queryType values in list_pull_requests_by_commits", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7440,7 +7437,7 @@ describe("repos tools", () => {
     });
 
     it("should handle repositories with null/undefined names in sorting", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
       if (!call) throw new Error("repo_repository tool not registered");
@@ -7468,7 +7465,7 @@ describe("repos tools", () => {
     });
 
     it("should handle non-Error exceptions in list_pull_requests_by_repo", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7492,7 +7489,7 @@ describe("repos tools", () => {
     });
 
     it("should handle non-Error exceptions in list_pull_requests_by_project", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7516,7 +7513,7 @@ describe("repos tools", () => {
     });
 
     it("should handle non-Error exceptions in list_pull_requests_by_commits", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("repo_pull_request tool not registered");
@@ -7539,7 +7536,7 @@ describe("repos tools", () => {
     });
 
     it("should handle invalid rightFileEndOffset with rightFileEndLine in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7564,7 +7561,7 @@ describe("repos tools", () => {
     });
 
     it("should handle network errors in search_commits", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
       if (!call) throw new Error("repo_search_commits tool not registered");
@@ -7577,7 +7574,7 @@ describe("repos tools", () => {
     });
 
     it("should handle valid rightFileEndOffset with rightFileEndLine in create_pull_request_thread", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
       const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
       if (!call) throw new Error("repo_pull_request_thread_write tool not registered");
@@ -7619,7 +7616,7 @@ describe("repos tools", () => {
   describe("enhanced commit search functions", () => {
     describe("repo_search_commits enhanced functionality", () => {
       it("should search commits with author and date filters via Search API", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
         if (!call) throw new Error("repo_search_commits tool not registered");
@@ -7649,7 +7646,7 @@ describe("repos tools", () => {
       });
 
       it("should search commits across multiple repos", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
         if (!call) throw new Error("repo_search_commits tool not registered");
@@ -7685,7 +7682,7 @@ describe("repos tools", () => {
 
     describe("repo_create_pull_request error handling", () => {
       it("should handle connection errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
         const [, , , handler] = call;
 
@@ -7708,7 +7705,7 @@ describe("repos tools", () => {
       });
 
       it("should handle API errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
         const [, , , handler] = call;
 
@@ -7733,7 +7730,7 @@ describe("repos tools", () => {
 
     describe("repo_create_branch error handling", () => {
       it("should handle connection errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
         const [, , , handler] = call;
 
@@ -7753,7 +7750,7 @@ describe("repos tools", () => {
       });
 
       it("should handle updateRefs API errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_create_branch);
         const [, , , handler] = call;
 
@@ -7780,7 +7777,7 @@ describe("repos tools", () => {
 
     describe("repo_update_pull_request error handling", () => {
       it("should handle API errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
         const [, , , handler] = call;
 
@@ -7804,7 +7801,7 @@ describe("repos tools", () => {
 
     describe("repo_update_pull_request_reviewers error handling", () => {
       it("should handle add reviewers error", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
         const [, , , handler] = call;
 
@@ -7827,7 +7824,7 @@ describe("repos tools", () => {
       });
 
       it("should handle remove reviewers error", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
         const [, , , handler] = call;
 
@@ -7852,7 +7849,7 @@ describe("repos tools", () => {
 
     describe("repo_list_repos_by_project error handling", () => {
       it("should handle repository listing errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
         const [, , , handler] = call;
 
@@ -7874,7 +7871,7 @@ describe("repos tools", () => {
 
     describe("repo_list_pull_requests_by_repo_or_project error handling", () => {
       it("should handle pull request listing errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
         const [, , , handler] = call;
 
@@ -7897,7 +7894,7 @@ describe("repos tools", () => {
 
     describe("repo_list_pull_request_threads error handling", () => {
       it("should handle thread listing errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
         const [, , , handler] = call;
 
@@ -7920,7 +7917,7 @@ describe("repos tools", () => {
 
     describe("repo_list_pull_request_thread_comments error handling", () => {
       it("should handle comment listing errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread);
         const [, , , handler] = call;
 
@@ -7944,7 +7941,7 @@ describe("repos tools", () => {
 
     describe("repo_list_branches_by_repo error handling", () => {
       it("should handle branch listing errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
         const [, , , handler] = call;
 
@@ -7966,7 +7963,7 @@ describe("repos tools", () => {
 
     describe("repo_list_my_branches_by_repo error handling", () => {
       it("should handle my branches listing errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
         const [, , , handler] = call;
 
@@ -7988,7 +7985,7 @@ describe("repos tools", () => {
 
     describe("repo_get_repo_by_name_or_id error handling", () => {
       it("should handle repository fetch errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_repository);
         const [, , , handler] = call;
 
@@ -8011,7 +8008,7 @@ describe("repos tools", () => {
 
     describe("repo_get_branch_by_name error handling", () => {
       it("should handle branch fetch errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_branch);
         const [, , , handler] = call;
 
@@ -8034,7 +8031,7 @@ describe("repos tools", () => {
 
     describe("repo_get_pull_request_by_id error handling", () => {
       it("should handle pull request fetch errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
         const [, , , handler] = call;
 
@@ -8057,7 +8054,7 @@ describe("repos tools", () => {
 
     describe("repo_reply_to_comment error handling", () => {
       it("should handle comment creation errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
         const [, , , handler] = call;
 
@@ -8082,7 +8079,7 @@ describe("repos tools", () => {
 
     describe("repo_create_pull_request_thread error handling", () => {
       it("should handle thread creation errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
         const [, , , handler] = call;
 
@@ -8104,7 +8101,7 @@ describe("repos tools", () => {
       });
 
       it("should handle validation errors for line numbers", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
         const [, , , handler] = call;
 
@@ -8127,7 +8124,7 @@ describe("repos tools", () => {
 
     describe("repo_update_pull_request_thread error handling", () => {
       it("should handle thread update errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
         const [, , , handler] = call;
 
@@ -8151,7 +8148,7 @@ describe("repos tools", () => {
       });
 
       it("should handle API connection errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
         const [, , , handler] = call;
 
@@ -8175,7 +8172,7 @@ describe("repos tools", () => {
       });
 
       it("should handle non-Error thrown objects", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_thread_write);
         const [, , , handler] = call;
 
@@ -8201,7 +8198,7 @@ describe("repos tools", () => {
 
     describe("repo_search_commits error handling", () => {
       it("should handle commit search errors (non-ok HTTP response)", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_search_commits);
         const [, , , handler] = call;
 
@@ -8214,7 +8211,7 @@ describe("repos tools", () => {
 
     describe("repo_list_pull_requests_by_commits error handling", () => {
       it("should handle pull request query errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request);
         const [, , , handler] = call;
 
@@ -8238,7 +8235,7 @@ describe("repos tools", () => {
 
     describe("repo_list_directory", () => {
       it("should list directory with default options", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         const [, , , handler] = call;
 
@@ -8295,7 +8292,7 @@ describe("repos tools", () => {
       });
 
       it("should recursively list and filter by recursion depth", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         const [, , , handler] = call;
 
@@ -8345,7 +8342,7 @@ describe("repos tools", () => {
       });
 
       it("should return isError when no items found (empty array)", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         const [, , , handler] = call;
 
@@ -8360,7 +8357,7 @@ describe("repos tools", () => {
       });
 
       it("should succeed for empty directory (folder entry only)", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         const [, , , handler] = call;
 
@@ -8381,7 +8378,7 @@ describe("repos tools", () => {
       });
 
       it("should return isError when getItems returns null", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         const [, , , handler] = call;
 
@@ -8398,7 +8395,7 @@ describe("repos tools", () => {
 
     describe("repo_list_directory error handling", () => {
       it("should handle directory list errors", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         const [, , , handler] = call;
 
@@ -8415,7 +8412,7 @@ describe("repos tools", () => {
 
     describe("repo_file_write", () => {
       it("creates a file using the current branch head", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8457,7 +8454,7 @@ describe("repos tools", () => {
       });
 
       it("updates a file using the supplied expected commit", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8487,7 +8484,7 @@ describe("repos tools", () => {
       });
 
       it("returns an error when the branch does not exist", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8511,7 +8508,7 @@ describe("repos tools", () => {
       });
 
       it("returns an error when the expected commit does not match the branch head", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8536,7 +8533,7 @@ describe("repos tools", () => {
       });
 
       it("returns an error when the expected branch does not exist", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8561,7 +8558,7 @@ describe("repos tools", () => {
       });
 
       it("returns an error when the push fails", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8586,7 +8583,7 @@ describe("repos tools", () => {
       });
 
       it("handles a non-Error push failure", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file_write);
         if (!call) throw new Error("repo_file_write tool not registered");
         const [, , , handler] = call;
@@ -8613,7 +8610,7 @@ describe("repos tools", () => {
 
     describe("Non-Error objects handling", () => {
       it("should handle non-Error thrown objects", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_pull_request_write);
         const [, , , handler] = call;
 
@@ -8638,7 +8635,7 @@ describe("repos tools", () => {
 
     describe("repo_get_file_content", () => {
       it("returns file content on success", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         if (!call) throw new Error("repo_file tool not registered");
@@ -8666,7 +8663,7 @@ describe("repos tools", () => {
       });
 
       it("returns isError: true when getItemText throws", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         if (!call) throw new Error("repo_file tool not registered");
@@ -8686,7 +8683,7 @@ describe("repos tools", () => {
       });
 
       it("returns isError: true when getItemText stream contains ADO error JSON (e.g. file not found)", async () => {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
 
         const call = (server.tool as jest.Mock).mock.calls.find(([toolName]) => toolName === REPO_TOOLS.repo_file);
         if (!call) throw new Error("repo_file tool not registered");
@@ -8726,7 +8723,7 @@ describe("repos tools", () => {
 
   describe("unknown action fallbacks", () => {
     function getHandler(toolName: string) {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === toolName);
       if (!call) throw new Error(`${toolName} tool not registered`);
       return call[3] as (...args: unknown[]) => Promise<unknown>;
@@ -8789,7 +8786,7 @@ describe("repos tools", () => {
     });
 
     it("repo_pull_request_write update: returns message when updatePullRequest returns null (covers trimPullRequest null path)", async () => {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("repo_pull_request_write tool not registered");
       const handler = call[3];
@@ -8810,7 +8807,7 @@ describe("repos tools", () => {
 
   describe("required parameter validation", () => {
     function getHandler(toolName: string) {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === toolName);
       if (!call) throw new Error(`${toolName} not registered`);
       return call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9031,7 +9028,7 @@ describe("repos tools", () => {
 
   describe("non-Error catch branches", () => {
     function getHandler(toolName: string) {
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === toolName);
       if (!call) throw new Error(`${toolName} not registered`);
       return call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9072,7 +9069,7 @@ describe("repos tools", () => {
     it("repo_create_branch: non-Error thrown in outer catch", async () => {
       // Simulate a non-Error thrown in the outer try (e.g. connectionProvider itself throws)
       const failingConnection = jest.fn().mockRejectedValue("connection string error");
-      configureRepoTools(server, tokenProvider, failingConnection, userAgentProvider);
+      configureRepoTools(server, tokenProvider, failingConnection, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("repo_create_branch not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9086,7 +9083,7 @@ describe("repos tools", () => {
     // repo_pull_request: includeChangedFiles edge cases
     describe("repo_pull_request get includeChangedFiles edge cases", () => {
       function getHandler() {
-        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+        configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
         const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_pull_request);
         if (!call) throw new Error("not registered");
         return call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9136,7 +9133,7 @@ describe("repos tools", () => {
     // repo_pull_request list: user_is_reviewer non-Error
     it("repo_pull_request list: getUserIdFromEmail throws non-Error for user_is_reviewer", async () => {
       mockGetUserIdFromEmail.mockRejectedValue("not an error");
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9152,7 +9149,7 @@ describe("repos tools", () => {
       stream.push("file content");
       stream.push(null);
       mockGitApi.getItemText.mockResolvedValue(stream);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9165,7 +9162,7 @@ describe("repos tools", () => {
     // repo_file: list_directory with version string
     it("repo_file list_directory: with version uses buildVersionDescriptor", async () => {
       mockGitApi.getItems.mockResolvedValue([{ path: "/README.md", isFolder: false }]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9181,7 +9178,7 @@ describe("repos tools", () => {
         { path: "/src/main.ts", isFolder: false },
         { path: null, isFolder: false }, // item without path — should be filtered
       ]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9195,7 +9192,7 @@ describe("repos tools", () => {
     it("repo_pull_request_write update: skips label deletion when label has no id", async () => {
       mockGitApi.getPullRequestLabels.mockResolvedValue([{ name: "noid-label" }]); // no .id
       mockGitApi.getPullRequest.mockResolvedValue({ pullRequestId: 1, repository: { name: "r" } });
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_pull_request_write);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9206,7 +9203,7 @@ describe("repos tools", () => {
     // repo_create_branch: getRefs throws (inner catch)
     it("repo_create_branch: getRefs throws returns error", async () => {
       mockGitApi.getRefs.mockRejectedValue(new Error("refs failed"));
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9219,7 +9216,7 @@ describe("repos tools", () => {
     it("repo_create_branch: updateRefs returns failure result", async () => {
       mockGitApi.getRefs.mockResolvedValue([{ name: "refs/heads/main", objectId: "abc123" }]);
       mockGitApi.updateRefs.mockResolvedValue([{ success: false, customMessage: "Branch already exists" }]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9232,7 +9229,7 @@ describe("repos tools", () => {
     it("repo_create_branch: updateRefs throws returns error", async () => {
       mockGitApi.getRefs.mockResolvedValue([{ name: "refs/heads/main", objectId: "abc123" }]);
       mockGitApi.updateRefs.mockRejectedValue(new Error("refs update failed"));
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9244,7 +9241,7 @@ describe("repos tools", () => {
     // buildVersionDescriptor: versionType || "Branch" fallback
     it("repo_file list_directory: versionType undefined falls back to Branch", async () => {
       mockGitApi.getItems.mockResolvedValue([{ path: "/file.ts", isFolder: false }]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9261,7 +9258,7 @@ describe("repos tools", () => {
     // line 136: ?? GitVersionType.Branch fallback when versionType not in map
     it("repo_file list_directory: unknown versionType triggers ?? GitVersionType.Branch fallback", async () => {
       mockGitApi.getItems.mockResolvedValue([{ path: "/file.ts", isFolder: false }]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9277,7 +9274,7 @@ describe("repos tools", () => {
       stream.push("content");
       stream.push(null);
       mockGitApi.getItemText.mockResolvedValue(stream);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9305,7 +9302,7 @@ describe("repos tools", () => {
       stream.push("content");
       stream.push(null);
       mockGitApi.getItemText.mockResolvedValue(stream);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9326,7 +9323,7 @@ describe("repos tools", () => {
 
     it("repo_file list_directory: preserves explicit Commit versionType", async () => {
       mockGitApi.getItems.mockResolvedValue([{ path: "/src", isFolder: true }]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9346,7 +9343,7 @@ describe("repos tools", () => {
         { path: "/src/utils", isFolder: true },
         { path: "/src/utils/helper.ts", isFolder: false },
       ]);
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_file);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9362,7 +9359,7 @@ describe("repos tools", () => {
       mockGitApi.getPullRequest.mockResolvedValue({ pullRequestId: 1 });
       mockGitApi.getPullRequestIterations.mockResolvedValue([{ id: 1 }]);
       mockGitApi.getPullRequestIterationChanges.mockResolvedValue({ changeEntries: undefined });
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9377,7 +9374,7 @@ describe("repos tools", () => {
       mockGitApi.getPullRequest.mockResolvedValue({ pullRequestId: 1 });
       mockGitApi.getPullRequestIterations.mockRejectedValue("string error not an Error");
       const consoleSpy = jest.spyOn(console, "warn").mockImplementation();
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_pull_request);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }] }>;
@@ -9389,7 +9386,7 @@ describe("repos tools", () => {
     // line 1081: non-Error in getRefs inner catch (repo_create_branch)
     it("repo_create_branch: getRefs throws non-Error returns String(error)", async () => {
       mockGitApi.getRefs.mockRejectedValue("string error");
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
@@ -9402,7 +9399,7 @@ describe("repos tools", () => {
     it("repo_create_branch: updateRefs throws non-Error returns String(error)", async () => {
       mockGitApi.getRefs.mockResolvedValue([{ name: "refs/heads/main", objectId: "abc123" }]);
       mockGitApi.updateRefs.mockRejectedValue("string error");
-      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider);
+      configureRepoTools(server, tokenProvider, connectionProvider, userAgentProvider, "test-org");
       const call = (server.tool as jest.Mock).mock.calls.find(([name]) => name === REPO_TOOLS.repo_create_branch);
       if (!call) throw new Error("not registered");
       const handler = call[3] as (p: unknown) => Promise<{ content: [{ text: string }]; isError?: boolean }>;
