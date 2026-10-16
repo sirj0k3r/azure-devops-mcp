@@ -7,7 +7,6 @@ import { IGitApi } from "azure-devops-node-api/GitApi.js";
 import { GitItem, VersionControlRecursionType } from "azure-devops-node-api/interfaces/GitInterfaces.js";
 import { z } from "zod";
 import { apiVersion } from "../utils.js";
-import { orgName } from "../index.js";
 import { createExternalContentResponse } from "../shared/content-safety.js";
 
 const SEARCH_TOOLS = {
@@ -16,7 +15,7 @@ const SEARCH_TOOLS = {
   search_workitem: "search_workitem",
 };
 
-function configureSearchTools(server: McpServer, tokenProvider: () => Promise<string>, connectionProvider: () => Promise<WebApi>, userAgentProvider: () => string) {
+function configureSearchTools(server: McpServer, tokenProvider: () => Promise<string>, connectionProvider: () => Promise<WebApi>, userAgentProvider: () => string, orgName: string) {
   server.tool(
     SEARCH_TOOLS.search_code,
     "Search Azure DevOps Repositories for a given search text",

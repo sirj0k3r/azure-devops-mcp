@@ -28,7 +28,6 @@ import { getCurrentUserDetails, getUserIdFromEmail } from "./auth.js";
 import { GitRepository } from "azure-devops-node-api/interfaces/TfvcInterfaces.js";
 import { WebApiTagDefinition } from "azure-devops-node-api/interfaces/CoreInterfaces.js";
 import { extractAdoStreamError, getEnumKeys, streamToString, apiVersion } from "../utils.js";
-import { orgName } from "../index.js";
 import { createExternalContentResponse } from "../shared/content-safety.js";
 
 const REPO_TOOLS = {
@@ -179,7 +178,7 @@ function buildVersionDescriptor(version?: string, versionType?: string): GitVers
   };
 }
 
-function configureRepoTools(server: McpServer, tokenProvider: () => Promise<string>, connectionProvider: () => Promise<WebApi>, userAgentProvider: () => string) {
+function configureRepoTools(server: McpServer, tokenProvider: () => Promise<string>, connectionProvider: () => Promise<WebApi>, userAgentProvider: () => string, orgName: string) {
   // --- repo_repository -------------------------------------------------------
   server.tool(
     REPO_TOOLS.repo_repository,
